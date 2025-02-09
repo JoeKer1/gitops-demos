@@ -1,3 +1,6 @@
+global:
+  revisionHistoryLimit: 5
+
 controller:
   replicas: 1 # Additional replicas will cause sharding of managed clusters across number of replicas.
   metrics:
@@ -52,9 +55,20 @@ server:
         prometheus.io/scrape: "true"
   service:
     type: NodePort
+  extensions:
+    enabled: true
+    extensionList:
+      - name: rollout-extension
+        env:
+          - name: EXTENSION_URL
+            value: https://github.com/argoproj-labs/rollout-extension/releases/download/v0.3.7/extension.tar
+
+
 
 configs:
   cm:
+    exec.enabled: true
+    statusbadge.enabled: true
     application.resourceTrackingMethod: 'annotation' #use annotation for tracking required for Crossplane
     resource.exclusions: |
       - kinds:
